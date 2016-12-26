@@ -1,42 +1,133 @@
-var express = require('express')
-var app = express()
+var express     =   require('express');
+var app         =   express();
+var bodyParser  =   require('body-parser');
+var mongoOp     =   require('./model/mongo');
+var router      =   express.Router();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({"extended" : false}));
+
+router.get("/",function(req,res){
+    res.json({"error" : false,"message" : "Hello World"});
+});
 
 
 
-app.get('/', function (req, res) {
-  res.send('Hello World!')
-})
 
-app.post('/create',function(req,res){
-	res.send("User created");
-})
+//************************************/users --GET & POST with the same route*****************************************
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
-})
+router.route("/users")
+    .get(function(req,res){
+        var response = {};
+        mongoOp.find({},function(err,data){
+        // Mongo command to fetch all data from collection.
+            if(err) {
+                response = {"error" : true,"message" : "Error fetching data"};
+            } else {
+                response = {"error" : false,"message" : data};
+            }
+            res.json(response);
+        });
+    })
+    .post(function(req,res){
+        var db = new mongoOp();                        //how to initialise the payload directly to model instead of assigning each attribute?
+        var response = {};
+        console.log(req.body);
 
-app.put('/user', function (req, res) {
-  res.send('Got a PUT request at /user')
-})
+        db.userName = req.body.userName; 
+        console.log(db.userName);
+        db.fieldID =  req.body.fieldID;                //generate unique id based on database key?? //validation if exists is pending
+        console.log(db.fieldID);
+        db.content = req.body.content;
+        console.log(db.content);
+                                                       // save() will run insert() command of MongoDB.
+    
+        db.save(function(err){
+    
+            if(err) {
+                response = {"error" : true,"message" : "Error adding data"};
+            } else {
+                response = {"error" : false,"message" : "Data added"};
+            }
+            res.json(response);
+        });
+    });
 
-app.delete('/user', function (req, res) {
-  res.send('Got a DELETE request at /user')
-})
-
-app.get('/users/:userId/books/:bookId', function (req, res) {
-  res.send(req.params)
-
-})
 
 
-app.get('/students/:studentId/books/:bookId', function (req, res, next) {
-  var stuId = req.params.studentId
-  var bookId = req.params.bookId
-  console.log(stuId);
-  next()
-}, function (req, res) {
-  res.send(req.params)
-})
+//*********************/users/:id for search GET /PUT(IF ALREADY DOES NOT EXIST ADDS)/ DELETE ***********************************************************
+
+router.route("/users/:id")
+    .get(function(req,res){
+        var response = {};
+        mongoOp.findById(req.params.id,function(err,data){
+            if(err) {
+                response = {"error" : true,"message" : "Error fetching data or no records found"};      
+            } else {
+                response = {"error" : false,"message" : data};
+            }
+            res.json(response);
+        });
+    })
+    .put(function(req,res){
+        var response = {};
+        mongoOp.findById(req.params.id,function(err,data){
+            if(err) {
+                response = {"error" : true,"message" : "Error fetching data"};
+            } else {
+                if(req.body.userName !== undefined) {
+                    data.userName = req.body.userName;
+                }
+                if(req.body.fieldID !== undefined) {
+                    data.fieldID = req.body.fieldID;
+                }
+                 if(req.body.content !== undefined) {
+                    data.content = req.body.content;
+                }
+                data.save(function(err){
+                    if(err) {
+                        response = {"error" : true,"message" : "Error updating data"};
+                    } else {
+                        response = {"error" : false,"message" : "Data is updated for "+req.params.id};
+                    }
+                    res.json(response);
+                })
+            }
+        });
+    })
+    .delete(function(req,res){
+        var response = {};
+        mongoOp.findById(req.params.id,function(err,data){
+            if(err) {
+                response = {"error" : true,"message" : "Error fetching data"};
+            } else {
+                mongoOp.remove({_id : req.params.id},function(err){
+                    if(err) {
+                        response = {"error" : true,"message" : "Error deleting data"};
+                    } else {
+                        response = {"error" : true,"message" : "Data associated with "+req.params.id+"is deleted"};
+                    }
+                    res.json(response);
+                });
+            }
+        });
+    })    
+
+
+
+
+app.use('/',router);
+
+app.listen(3000);
+console.log("Listening to PORT 3000");
+
+
+
+
+
+
+
+
 
 
 
