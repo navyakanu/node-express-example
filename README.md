@@ -33,7 +33,8 @@ PAYLOAD
 {
     "userName" : "navya@codeforgeek.com",
     "fieldID" : "simple",
-    "content": "abcd"
+    "content": "abcd",
+    "status" : true
 }
 
 

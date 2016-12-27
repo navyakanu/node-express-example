@@ -8,7 +8,8 @@ var mongoSchema = mongoose.Schema;
 var userSchema =  new mongoSchema({
 	"userName" : String,
 	"fieldID" : String,
-	"content" : String
+	"content" : String,
+	"status" : Boolean
 });
 
 

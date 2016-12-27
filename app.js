@@ -32,14 +32,12 @@ router.route("/users")
     .post(function(req,res){
         var db = new mongoOp();                        //how to initialise the payload directly to model instead of assigning each attribute?
         var response = {};
-        console.log(req.body);
+ 
 
         db.userName = req.body.userName; 
-        console.log(db.userName);
         db.fieldID =  req.body.fieldID;                //generate unique id based on database key?? //validation if exists is pending
-        console.log(db.fieldID);
         db.content = req.body.content;
-        console.log(db.content);
+        db.status = req.body.status;
                                                        // save() will run insert() command of MongoDB.
     
         db.save(function(err){
@@ -83,6 +81,9 @@ router.route("/users/:id")
                 }
                  if(req.body.content !== undefined) {
                     data.content = req.body.content;
+                }
+                if(req.body.status !== undefined) {
+                    data.status = req.body.status;
                 }
                 data.save(function(err){
                     if(err) {
