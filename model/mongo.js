@@ -1,5 +1,17 @@
 var mongoose =require('mongoose');
-mongoose.connect('mongodb://localhost:27017/myProject');
+
+var mongoDBUrl = 'mongodb://localhost:27017/myProject'
+
+
+mongoose.connect(mongoDBUrl,function (err, db) {
+  if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } else {
+    //HURRAY!! We are connected. :)
+    console.log('Connection established to', mongoDBUrl);
+	}
+}
+);
 
 
 var mongoSchema = mongoose.Schema;
@@ -13,6 +25,7 @@ var userSchema =  new mongoSchema({
 });
 
 
-module.exports = mongoose.model('userDetailSchema',userSchema);
+
+module.exports = mongoose.model('userdetailschemas',userSchema);
 
 

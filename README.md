@@ -27,7 +27,7 @@ Installation Steps:
 API Calls:
 
 
-1) localhost:3000/users -- GET/POST
+1) localhost:3000/notes -- GET/POST
 
 PAYLOAD
 {
@@ -38,7 +38,7 @@ PAYLOAD
 }
 
 
-2) localhost:3000/users:id 
+2) localhost:3000/notes:id 
 
 To get the existing userid login to mongoshell in a new terminal
 
