@@ -4,10 +4,11 @@ var mongoDBUrl = 'mongodb://localhost:27017/myProject'
 
 
 mongoose.connect(mongoDBUrl,function (err, db) {
+
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
+
   } else {
-    //HURRAY!! We are connected. :)
     console.log('Connection established to', mongoDBUrl);
 	}
 }
@@ -17,8 +18,8 @@ mongoose.connect(mongoDBUrl,function (err, db) {
 var mongoSchema = mongoose.Schema;
 
 
-var userSchema =  new mongoSchema({
-	"userName" : String,
+var notesSchema =  new mongoSchema({
+	"title" : String,
 	"fieldID" : String,
 	"content" : String,
 	"status" : Boolean
@@ -26,6 +27,6 @@ var userSchema =  new mongoSchema({
 
 
 
-module.exports = mongoose.model('userdetailschemas',userSchema);
+module.exports = mongoose.model('notedetails',notesSchema);
 
 

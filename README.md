@@ -31,9 +31,9 @@ API Calls:
 
 PAYLOAD
 {
-    "userName" : "navya@codeforgeek.com",
-    "fieldID" : "simple",
-    "content": "abcd",
+    "title" : "Javascript",
+    "fieldID" : "1234",
+    "content": "Callback functions",
     "status" : true
 }
 
@@ -45,7 +45,7 @@ To get the existing userid login to mongoshell in a new terminal
 1) mongo
 2) use myProject
 3) show tables
-4) db.userdetailschemas.find()
+4) db.noteDetails.find()
 
 
 select one of the ids from the document and add in the api call (POST atleast one entry from api call /users before selecting) 
