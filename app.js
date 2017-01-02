@@ -3,11 +3,32 @@ var app         =   express();
 var bodyParser  =   require('body-parser');
 var mongoOp     =   require('./model/mongo');   //mongoOp 
 var router      =   express.Router();
+var path = require('path');
+
+
+
+app.use(express.static(path.join(__dirname + '/public')));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
 
 
+
+//---- Render static file with the call
+
+router.route("/").get(function(req,res){
+    res.sendFile( __dirname + "/public/html/" + "index.html" );  
+});
+
+
+router.route("/todo").get(function(req,res){
+    res.sendFile(path.join(__dirname, '/public/html', 'todo.html'));
+});
+
+
+router.route("/todolist").get(function(req,res){
+   res.sendFile('todoagain.html', { root: path.join(__dirname, 'public/html') });
+});
 
 
 
