@@ -45,7 +45,7 @@ To get the existing userid login to mongoshell in a new terminal
 1) mongo
 2) use myProject
 3) show tables
-4) db.noteDetails.find()
+4) db.notedetails.find()
 
 
 select one of the ids from the document and add in the api call (POST atleast one entry from api call /users before selecting) 

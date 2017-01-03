@@ -23,10 +23,10 @@ var notesSchema =  new mongoSchema({
 	"fieldID" : String,
 	"content" : String,
 	"status" : Boolean
-});
+},{ versionKey: false });
 
 
 
-module.exports = mongoose.model('notedetails',notesSchema);
+module.exports = mongoose.model('notes',notesSchema);
 
 
