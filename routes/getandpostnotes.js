@@ -1,17 +1,39 @@
 var mongoOp  =  require('../model/mongo');  
 
 
+// console.log(mongoOp.db);
+
+
+// mongoOp.db.collection('counterschema').insert({_id:"fieldPositionID",sequence_value:0})
+
+
+
+
+
+// function getNextSequenceValue(sequenceName){
+
+//    var sequenceDocument = db.counters.findAndModify({
+//       query:{_id: sequenceName },
+//       update: {$inc:{sequence_value:1}},
+//       new:true
+//    });
+    
+//    return sequenceDocument.sequence_value;
+// }
+
 
 exports.getNoteDetails = 
 		function(req,res){
         var response = {};
 
-        mongoOp.db.collection('notes').find().sort([['fieldID', 1]]).toArray(function (err, data){
+        mongoOp.db.collection('notes3').find({},{'__v': 0 }).sort([['fieldPositionID', 1]]).toArray(function (err, data){
              if(err) {
-                response = {"error" : true,"message" : "Error fetching data"};
+                response = {"error" : true,"success" : "Error fetching data"};
             } else {
-                response = {"error" : false,"message" : data};
+                response = {"error" : null,"success" : data};
             }
+            res.setHeader('Content-Type', 'application/json');
+            res.setHeader('Access-Control-Allow-Origin','*');
             res.json(response);
         });
     
@@ -25,8 +47,8 @@ exports.getNoteDetails =
        		var db = new mongoOp();    
                                 //how to initialise the payload directly to model instead of assigning each attribute?
         	var response = {};
-				db.title = req.body.title; 
-		        db.fieldID =  req.body.fieldID;                //generate unique id based on database key?? //validation if exists is pending
+				db.contentHeader = req.body.contentHeader; 
+		        db.fieldPositionID =  req.body.finalPositionID ;    //generate unique id based on database key?? //validation if exists is pending
 		        db.content = req.body.content;
 		        db.status = req.body.status;
 		                                                      
@@ -34,10 +56,12 @@ exports.getNoteDetails =
     	    db.save(function(err){
     
 	            if(err) {
-	                response = {"error" : true,"message" : "Error adding data"};
+	                response = {"error" : true,"success" : "Error adding data"};
 	            } else {
-	                response = {"error" : false,"message" : "Data added"};
+	                response = {"error" : null,"success" : "Data added"};
 	            }
+                res.setHeader('Content-Type', 'application/json');
+                res.setHeader('Access-Control-Allow-Origin','*');
 	            res.json(response);
 	        });
 }
@@ -50,10 +74,12 @@ exports.getSpecificNoteDetails =
         var response = {};
             mongoOp.findById(req.params.id,function(err,data){
             if(err) {
-                response = {"error" : true,"message" : "Error fetching data or no records found"};      
+                response = {"error" : true,"success" : "Error fetching data or no records found"};      
             } else {
-                response = {"error" : false,"message" : data};
+                response = {"error" : null,"success" : data};
             }
+            res.setHeader('Content-Type', 'application/json');
+            res.setHeader('Access-Control-Allow-Origin','*');
             res.json(response);
         });
 }
@@ -64,13 +90,13 @@ exports.updateSpecificNoteDetails =
                 var response = {};
                 mongoOp.findById(req.params.id,function(err,data){
                     if(err) {
-                        response = {"error" : true,"message" : "Error fetching data"};
+                        response = {"error" : true,"success" : "Error fetching data"};
                     } else {
-                        if(req.body.title !== undefined) {
-                            data.title = req.body.title;
+                        if(req.body.contentHeader !== undefined) {
+                            data.contentHeader = req.body.contentHeader;
                         }
-                        if(req.body.fieldID !== undefined) {
-                            data.fieldID = req.body.fieldID;
+                        if(req.body.fieldPositionID !== undefined) {
+                            data.fieldPositionID = req.body.fieldPositionID;
                         }
                          if(req.body.content !== undefined) {
                             data.content = req.body.content;
@@ -80,11 +106,14 @@ exports.updateSpecificNoteDetails =
                         }
                         data.save(function(err){
                             if(err) {
-                                response = {"error" : true,"message" : "Error updating data"};
+                                response = {"error" : true,"success" : "Error updating data"};
                             } else {
-                                response = {"error" : false,"message" : "Data is updated for "+req.params.id};
+                                response = {"error" : null,"success" : "Data is updated for "+req.params.id};
                             }
+                            res.setHeader('Content-Type', 'application/json');
+                            res.setHeader('Access-Control-Allow-Origin','*');
                             res.json(response);
+                          
                         })
                     }
                 });
@@ -97,19 +126,23 @@ exports.deleteSpecificNoteDetails =
           var response = {};
             mongoOp.findById(req.params.id,function(err,data){
             if(err) {
-                response = {"error" : true,"message" : "Error fetching data"};
+                response = {"error" : true,"success" : "Error fetching data"};
             } else {
                 mongoOp.remove({_id : req.params.id},function(err){
                     if(err) {
-                        response = {"error" : true,"message" : "Error deleting data"};
+                        response = {"error" : true,"success" : "Error deleting data"};
                     } else {
-                        response = {"error" : true,"message" : "Data associated with "+req.params.id+"is deleted"};
+                        response = {"error" : true,"success" : "Data associated with "+req.params.id+"is deleted"};
                     }
+                    res.setHeader('Content-Type', 'application/json');
+                    res.setHeader('Access-Control-Allow-Origin','*');
                     res.json(response);
                 });
             }
         });
 }
+
+
 
 
 

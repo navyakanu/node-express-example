@@ -2,7 +2,6 @@ var mongoose =require('mongoose');
 
 var mongoDBUrl = 'mongodb://localhost:27017/myProject'
 
-
 mongoose.connect(mongoDBUrl,function (err, db) {
 
   if (err) {
@@ -15,18 +14,31 @@ mongoose.connect(mongoDBUrl,function (err, db) {
 );
 
 
+
+
 var mongoSchema = mongoose.Schema;
 
 
 var notesSchema =  new mongoSchema({
-	"title" : String,
-	"fieldID" : String,
+	"contentHeader" : String,
+	"fieldPositionID" : String,
 	"content" : String,
 	"status" : Boolean
 },{ versionKey: false });
 
 
 
-module.exports = mongoose.model('notes',notesSchema);
+// var counterSchema = new mongoSchema({
+// 	"_id" : Number,
+// 	"sequence_value" : String
+// })
+
+
+
+
+
+module.exports = mongoose.model('notes3',notesSchema);
+//module.exports =mongoose.model('counterschema', counterSchema)
+
 
 
