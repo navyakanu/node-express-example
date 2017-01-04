@@ -30,6 +30,7 @@ exports.getNoteDetails =
              if(err) {
                 response = {"error" : true,"success" : "Error fetching data"};
             } else {
+            
                 response = {"error" : null,"success" : data};
             }
             res.setHeader('Content-Type', 'application/json');
@@ -44,26 +45,49 @@ exports.getNoteDetails =
  exports.addNoteDetails =
  		function(req,res){
  		
-       		var db = new mongoOp();    
-                                //how to initialise the payload directly to model instead of assigning each attribute?
-        	var response = {};
-				db.contentHeader = req.body.contentHeader; 
-		        db.fieldPositionID =  req.body.finalPositionID ;    //generate unique id based on database key?? //validation if exists is pending
-		        db.content = req.body.content;
-		        db.status = req.body.status;
-		                                                      
+       		var dbpost = new mongoOp();   
+
+          
     
-    	    db.save(function(err){
+         mongoOp.db.collection('notes3').find({},{'__v': 0 }).sort([['fieldPositionID', -1]]).toArray(function (err, data){
+             if(err) {
+                var value = {"error" : true,"success" : "Error fetching data"};
+            } else {
+            
+            if(Object.keys(data).length !== 0) {                        //Any better ways??
+                var value = parseInt(data[0].fieldPositionID)
+            }
+            else {
+               var value = 0;
+            }
+
+                var response = {};
+                console.log(value);
+                dbpost.contentHeader = req.body.contentHeader;  //how to initialise the payload directly to model instead of assigning each attribute
+                dbpost.fieldPositionID =   parseInt(value)+1;    
+                dbpost.content = req.body.content;
+                dbpost.status = req.body.status;
+                                                              
     
-	            if(err) {
-	                response = {"error" : true,"success" : "Error adding data"};
-	            } else {
-	                response = {"error" : null,"success" : "Data added"};
-	            }
+            dbpost.save(function(err){
+    
+                if(err) {
+                    response = {"error" : true,"success" : "Error adding data"};
+                } else {
+                    response = {"error" : null,"success" : "Data added"};
+                }
                 res.setHeader('Content-Type', 'application/json');
                 res.setHeader('Access-Control-Allow-Origin','*');
-	            res.json(response);
-	        });
+                res.json(response);
+            });
+                
+            }
+
+
+      
+        });
+
+                   
 }
 
 
