@@ -1,32 +1,13 @@
 var mongoOp  =  require('../model/mongo');  
 
 
-// console.log(mongoOp.db);
-
-
-// mongoOp.db.collection('counterschema').insert({_id:"fieldPositionID",sequence_value:0})
-
-
-
-
-
-// function getNextSequenceValue(sequenceName){
-
-//    var sequenceDocument = db.counters.findAndModify({
-//       query:{_id: sequenceName },
-//       update: {$inc:{sequence_value:1}},
-//       new:true
-//    });
-    
-//    return sequenceDocument.sequence_value;
-// }
-
 
 exports.getNoteDetails = 
-		function(req,res){
+        function(req,res){
         var response = {};
-
-        mongoOp.db.collection('notes3').find({},{'__v': 0 }).sort([['fieldPositionID', 1]]).toArray(function (err, data){
+        
+        //Need to find a way to use "find" with mongoose and not access table directly
+        mongoOp.db.collection('notes3').find({},{'_id': 0 }).sort([['fieldPositionID', 1]]).toArray(function (err, data){
              if(err) {
                 response = {"error" : true,"success" : "Error fetching data"};
             } else {
@@ -43,13 +24,11 @@ exports.getNoteDetails =
 
 
  exports.addNoteDetails =
- 		function(req,res){
- 		
-       		var dbpost = new mongoOp();   
-
-          
-    
-         mongoOp.db.collection('notes3').find({},{'__v': 0 }).sort([['fieldPositionID', -1]]).toArray(function (err, data){
+        function(req,res){
+        
+            var dbpost = new mongoOp();   
+             //Need to find a way to use "find" with mongoose and not access table directly
+             mongoOp.db.collection('notes3').find({},{'_id': 0 }).sort([['fieldPositionID', -1]]).toArray(function (err, data){
              if(err) {
                 var value = {"error" : true,"success" : "Error fetching data"};
             } else {
@@ -62,7 +41,6 @@ exports.getNoteDetails =
             }
 
                 var response = {};
-                console.log(value);
                 dbpost.contentHeader = req.body.contentHeader;  //how to initialise the payload directly to model instead of assigning each attribute
                 dbpost.fieldPositionID =   parseInt(value)+1;    
                 dbpost.content = req.body.content;
@@ -82,21 +60,17 @@ exports.getNoteDetails =
             });
                 
             }
-
-
-      
-        });
+});
 
                    
 }
 
 
 
-
 exports.getSpecificNoteDetails =
     function(req,res){
         var response = {};
-            mongoOp.findById(req.params.id,function(err,data){
+            mongoOp.findOne({'fieldPositionID':req.params.id},{'_id': 0 },function(err,data){
             if(err) {
                 response = {"error" : true,"success" : "Error fetching data or no records found"};      
             } else {
@@ -108,27 +82,20 @@ exports.getSpecificNoteDetails =
         });
 }
 
+
+
 exports.updateSpecificNoteDetails =
   
           function(req,res){
                 var response = {};
-                mongoOp.findById(req.params.id,function(err,data){
+               
+                mongoOp.findOneAndUpdate({'fieldPositionID':parseInt(req.params.id)},
+                    {$set: {'content':req.body.content,'contentHeader':req.body.contentHeader,'status':req.body.status}},function(err,data){
                     if(err) {
                         response = {"error" : true,"success" : "Error fetching data"};
-                    } else {
-                        if(req.body.contentHeader !== undefined) {
-                            data.contentHeader = req.body.contentHeader;
-                        }
-                        if(req.body.fieldPositionID !== undefined) {
-                            data.fieldPositionID = req.body.fieldPositionID;
-                        }
-                         if(req.body.content !== undefined) {
-                            data.content = req.body.content;
-                        }
-                        if(req.body.status !== undefined) {
-                            data.status = req.body.status;
-                        }
-                        data.save(function(err){
+                    } 
+
+                     data.save(function(err){
                             if(err) {
                                 response = {"error" : true,"success" : "Error updating data"};
                             } else {
@@ -139,7 +106,7 @@ exports.updateSpecificNoteDetails =
                             res.json(response);
                           
                         })
-                    }
+                    
                 });
 }
 
@@ -148,11 +115,9 @@ exports.updateSpecificNoteDetails =
 exports.deleteSpecificNoteDetails =
         function(req,res){  
           var response = {};
-            mongoOp.findById(req.params.id,function(err,data){
-            if(err) {
-                response = {"error" : true,"success" : "Error fetching data"};
-            } else {
-                mongoOp.remove({_id : req.params.id},function(err){
+          
+              
+                mongoOp.findOneAndRemove({'fieldPositionID': parseInt(req.params.id)},function(err){
                     if(err) {
                         response = {"error" : true,"success" : "Error deleting data"};
                     } else {
@@ -162,8 +127,7 @@ exports.deleteSpecificNoteDetails =
                     res.setHeader('Access-Control-Allow-Origin','*');
                     res.json(response);
                 });
-            }
-        });
+        
 }
 
 

@@ -38,7 +38,7 @@ router.route("/todolist").get(function(req,res){
 
 
 app.get('/notes',createtodo.getNoteDetails);
-app.get('/notes/:id',createtodo.getSpecificNoteDetails)
+app.get('/notes/:fieldPositionID',createtodo.getSpecificNoteDetails)
 
 
 app.post('/notes',createtodo.addNoteDetails);
@@ -46,8 +46,8 @@ app.post('/notes',createtodo.addNoteDetails);
 
 //*********************/notes/:id for search GET /PUT (UPDATE) /DELETE ******************************************************************
 
-app.put('/notes/:id',createtodo.updateSpecificNoteDetails)
-app.delete('/notes/:id',createtodo.deleteSpecificNoteDetails)
+app.put('/notes/:fieldPositionID',createtodo.updateSpecificNoteDetails)
+app.delete('/notes/:fieldPositionID',createtodo.deleteSpecificNoteDetails)
 
   
 
