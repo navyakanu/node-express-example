@@ -23,7 +23,10 @@ var notesSchema =  new mongoSchema({
     "contentHeader" : String,
     "fieldPositionID" : String,
     "content" : String,
-    "status" : Boolean
+    "status" : Boolean,
+    "createdTimeStamp": Date,
+    "targetDate" : Date
+
 },{ versionKey: false });
 
 

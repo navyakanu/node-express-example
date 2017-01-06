@@ -7,7 +7,7 @@ exports.getNoteDetails =
         var response = {};
         
         //Need to find a way to use "find" with mongoose and not access table directly
-        mongoOp.db.collection('notes3').find({},{'_id': 0 }).sort([['fieldPositionID', 1]]).toArray(function (err, data){
+        mongoOp.db.collection('notes3').find({},{'_id': 0 ,'createdTimeStamp':0}).sort([['fieldPositionID', 1]]).toArray(function (err, data){
              if(err) {
                 response = {"error" : true,"success" : "Error fetching data"};
             } else {
@@ -28,7 +28,7 @@ exports.getNoteDetails =
         
             var dbpost = new mongoOp();   
              //Need to find a way to use "find" with mongoose and not access table directly
-             mongoOp.db.collection('notes3').find({},{'_id': 0 }).sort([['fieldPositionID', -1]]).toArray(function (err, data){
+             mongoOp.db.collection('notes3').find({}).sort([['fieldPositionID', -1]]).toArray(function (err, data){
              if(err) {
                 var value = {"error" : true,"success" : "Error fetching data"};
             } else {
@@ -45,6 +45,8 @@ exports.getNoteDetails =
                 dbpost.fieldPositionID =   parseInt(value)+1;    
                 dbpost.content = req.body.content;
                 dbpost.status = req.body.status;
+                dbpost.targetDate = req.body.targetDate;
+                dbpost.createdTimeStamp = new Date().toISOString();
                                                               
     
             dbpost.save(function(err){
@@ -70,7 +72,7 @@ exports.getNoteDetails =
 exports.getSpecificNoteDetails =
     function(req,res){
         var response = {};
-            mongoOp.findOne({'fieldPositionID':req.params.id},{'_id': 0 },function(err,data){
+            mongoOp.findOne({'fieldPositionID':req.params.fieldPositionID},{'_id':0,'createdTimeStamp':0},function(err,data){
             if(err) {
                 response = {"error" : true,"success" : "Error fetching data or no records found"};      
             } else {
@@ -89,8 +91,8 @@ exports.updateSpecificNoteDetails =
           function(req,res){
                 var response = {};
                
-                mongoOp.findOneAndUpdate({'fieldPositionID':parseInt(req.params.id)},
-                    {$set: {'content':req.body.content,'contentHeader':req.body.contentHeader,'status':req.body.status}},function(err,data){
+                mongoOp.findOneAndUpdate({'fieldPositionID':parseInt(req.params.fieldPositionID)},
+                    {$set: {'content':req.body.content,'contentHeader':req.body.contentHeader,'status':req.body.status,'targetDate':req.body.targetDate}},function(err,data){
                     if(err) {
                         response = {"error" : true,"success" : "Error fetching data"};
                     } 
@@ -117,7 +119,7 @@ exports.deleteSpecificNoteDetails =
           var response = {};
           
               
-                mongoOp.findOneAndRemove({'fieldPositionID': parseInt(req.params.id)},function(err){
+                mongoOp.findOneAndRemove({'fieldPositionID': parseInt(req.params.fieldPositionID)},function(err){
                     if(err) {
                         response = {"error" : true,"success" : "Error deleting data"};
                     } else {
