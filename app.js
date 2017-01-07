@@ -51,6 +51,10 @@ app.delete('/notes/:fieldPositionID',createtodo.deleteSpecificNoteDetails)
 
   
 
+ //********************************/notes/:id for getting the status of the target
+ 
+ app.get('/notes/status/:fieldPositionID',createtodo.getNoteStatus) 
+
 
 app.listen(3000);
 console.log("Listening to PORT 3000");

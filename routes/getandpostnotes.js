@@ -1,5 +1,5 @@
 var mongoOp  =  require('../model/mongo');  
-
+var utility = require('../utility/deadlineUtility')
 
 
 exports.getNoteDetails = 
@@ -131,6 +131,37 @@ exports.deleteSpecificNoteDetails =
                 });
         
 }
+
+
+exports.getNoteStatus =
+        function(req,res){
+            var response ={};
+
+            mongoOp.findOne({'fieldPositionID':req.params.fieldPositionID},{'_id':0,'createdTimeStamp':0},function(err,data){
+         
+
+            if(err) {
+                response = {"error" : true,"success" : "Error fetching data or no records found"};      
+            } else {
+
+                if(data != null){
+                   utility.dateEqual(data.targetDate,new Date())?response ={"error" : false,"success": "Today is targets date: Target achieved"}:response ={"error" : false,"success": "Target not achieved"}
+                }
+                else {
+                    response = {"error" : false,"success": "No records found"}
+                }
+
+            }
+                 
+            res.setHeader('Content-Type', 'application/json');
+            res.setHeader('Access-Control-Allow-Origin','*');
+            res.json(response);
+        });
+
+}
+
+
+
 
 
 
