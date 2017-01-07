@@ -54,6 +54,7 @@ app.delete('/notes/:fieldPositionID',createtodo.deleteSpecificNoteDetails)
  //********************************/notes/:id for getting the status of the target
  
  app.get('/notes/status/:fieldPositionID',createtodo.getNoteStatus) 
+ app.get('/notes/isTargetDay/:fieldPositionID',createtodo.getNoteStatusIfTargetDateISToday) 
 
 
 app.listen(3000);

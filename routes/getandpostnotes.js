@@ -101,7 +101,7 @@ exports.updateSpecificNoteDetails =
                             if(err) {
                                 response = {"error" : true,"success" : "Error updating data"};
                             } else {
-                                response = {"error" : null,"success" : "Data is updated for "+req.params.id};
+                                response = {"error" : null,"success" : "Data is updated for "+req.params.fieldPositionID};
                             }
                             res.setHeader('Content-Type', 'application/json');
                             res.setHeader('Access-Control-Allow-Origin','*');
@@ -123,7 +123,7 @@ exports.deleteSpecificNoteDetails =
                     if(err) {
                         response = {"error" : true,"success" : "Error deleting data"};
                     } else {
-                        response = {"error" : true,"success" : "Data associated with "+req.params.id+"is deleted"};
+                        response = {"error" : true,"success" : "Data associated with "+req.params.fieldPositionID+"is deleted"};
                     }
                     res.setHeader('Content-Type', 'application/json');
                     res.setHeader('Access-Control-Allow-Origin','*');
@@ -131,6 +131,36 @@ exports.deleteSpecificNoteDetails =
                 });
         
 }
+
+
+exports.getNoteStatusIfTargetDateISToday =
+        function(req,res){
+            var response ={};
+
+            mongoOp.findOne({'fieldPositionID':req.params.fieldPositionID},{'_id':0,'createdTimeStamp':0},function(err,data){
+         
+
+            if(err) {
+                response = {"error" : true,"success" : "Error fetching data or no records found"};      
+            } else {
+
+                if(data != null){
+                
+                   utility.dateEqual(data.targetDate,new Date())?response ={"error" : false,"success": "Today is targets date"}:response ={"error" : false,"success": "Today is not target day!"}
+                }
+                else {
+                    response = {"error" : false,"success": "No records found"}
+                }
+
+            }
+                 
+            res.setHeader('Content-Type', 'application/json');
+            res.setHeader('Access-Control-Allow-Origin','*');
+            res.json(response);
+        });
+
+}
+
 
 
 exports.getNoteStatus =
@@ -145,7 +175,7 @@ exports.getNoteStatus =
             } else {
 
                 if(data != null){
-                   utility.dateEqual(data.targetDate,new Date())?response ={"error" : false,"success": "Today is targets date: Target achieved"}:response ={"error" : false,"success": "Target not achieved"}
+                   (utility.dateCompare(data.targetDate,new Date())==1)?response ={"error" : false,"success": "Today is targets date: Target achieved"}:response ={"error" : false,"success": "Target date is already passed"}
                 }
                 else {
                     response = {"error" : false,"success": "No records found"}
@@ -159,6 +189,9 @@ exports.getNoteStatus =
         });
 
 }
+
+
+
 
 
 

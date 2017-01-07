@@ -1,29 +1,11 @@
-var MongoClient = require('mongodb').MongoClient;
+var moment = require('moment');
 
-
-var dblocal;
-
-var pr = MongoClient.connect('mongodb://localhost:27017/myProject');
-console.log("yes :  "+dblocal);
-
-pr.then(function(err, db){
-
-	dblocal=db;
-	console.log(dblocal);
-	
-	if (err) throw err;	
-	db.collection('userdetailschemas').find().sort([['fieldID', 1]]).toArray(function (err, docs){
-		if (err) throw err;
-	});
-
-	}
-)
-
-console.log(dblocal);
-
-
-
-
-
+function compare(dateTimeA, dateTimeB) {
+    var momentA = moment(dateTimeA,"DD/MM/YYYY");
+    var momentB = moment(dateTimeB,"DD/MM/YYYY");
+    if (momentA > momentB) return 1;
+    else if (momentA < momentB) return -1;
+    else return 0;
+}
 
 
